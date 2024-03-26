@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,8 @@ public class UserDetailsManager implements UserDetailsService {
             User admin = new User();
             admin.setMail("admin@admin.gmail.com");
             admin.setUserRole(UserRole.ROLE_ADMIN);
-            admin.setPassword("12345");
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            admin.setPassword(passwordEncoder.encode("12345"));
             admin.setCreateDt(LocalDateTime.now());
             userRepository.save(admin);
             }

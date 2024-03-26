@@ -3,14 +3,12 @@ package com.spottoto.bet.security;
 import com.spottoto.bet.exceptions.handler.CustomAccesDeniedHandler;
 import com.spottoto.bet.exceptions.handler.CustomAuthenticatiomEntryPoint;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -72,33 +70,48 @@ public class WebSecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-/*    @Autowired
-    public void configurePasswordEncoder(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userDetailsService).passwordEncoder(getBCryptPasswordEncoder());
-    }
-    @Bean
-    public BCryptPasswordEncoder getBCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }*/
+
+//    @Bean             //parolasız
+//    public AuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//        authenticationProvider.setUserDetailsService(userDetailsService);
+//        authenticationProvider.setPasswordEncoder(passwordEncoder());
+//        return authenticationProvider;
+//    }
+
+    /*    @Autowired
+        public void configurePasswordEncoder(AuthenticationManagerBuilder builder) throws Exception {
+            builder.userDetailsService(userDetailsService).passwordEncoder(getBCryptPasswordEncoder());
+        }
+        @Bean
+        public BCryptPasswordEncoder getBCryptPasswordEncoder() {
+            return new BCryptPasswordEncoder();
+        }*/
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword.toString();
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return rawPassword.equals(encodedPassword);
-            }
-        };
+        return new BCryptPasswordEncoder();
     }
+
+    /*    @Bean             //şifrelemesiz encoder
+        public PasswordEncoder passwordEncoder() {
+            return new PasswordEncoder() {
+                @Override
+                public String encode(CharSequence rawPassword) {
+                    return rawPassword.toString();
+                }
+
+                @Override
+                public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                    return rawPassword.equals(encodedPassword);
+                }
+            };
+        }*/
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

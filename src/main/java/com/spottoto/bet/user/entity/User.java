@@ -4,6 +4,7 @@ import com.spottoto.bet.account.controller.request.RegisterRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -24,16 +25,22 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.ROLE_USER;
 
+    public void setPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
+    }
+
     public User create(RegisterRequest request) {
         firstname = request.getFirstname();
         lastname = request.getLastname();
-        password = request.getPassword();
+        setPassword(password = request.getPassword());
         mail = request.getMail();
         createDt = LocalDateTime.now();
         return this;
     }
+
     @PreUpdate
-    public void onUpdate(){
+    public void onUpdate() {
         updateDt = LocalDateTime.now();
     }
 }
